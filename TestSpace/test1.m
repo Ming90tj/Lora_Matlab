@@ -1,0 +1,28 @@
+clc;
+t0 = 0;
+t1 = 0.63;
+samp_rate = 100;
+f0 = 20;
+f1 = 20.63;
+shift_N = 10;
+t = t0: 1/samp_rate : t1;
+NumberPonit = length(t);
+f_step =  (f1 - f0 + 0.1)/NumberPonit;
+t_step =  (t1 - t0 + 0.01)/NumberPonit;
+f_shift = shift_N * f_step;
+t_shift = shift_N * t_step;
+tt = t0 : 1/samp_rate : (t0 + t_shift); 
+y1 = chirp (tt , f0 + f_shift , t0 + t_shift , f1);
+y1_angl=(180 * angle(y1(shift_N)))/pi;
+tt1 = (t0 + t_shift + t_step): 1/samp_rate : t1;
+y2 = chirp (tt1 , f0 , t1 , f1 - f_step ,'linear' , 30);
+yy = [y1,y2];
+y3 = chirp (tt , f0 + f_shift , t0 + t_shift , f1 , 'linear' , -90);
+y4 = chirp (tt1 , f0 , t1 , f1 - f_step ,'linear' , y1_angl-90);
+yy1 = [y3,y4];
+ComplexSignal= yy + sqrt(-1)*yy1;
+c1 = y1 + sqrt(-1)*y3;
+c2 = y2 + sqrt(-1)*y4;
+ang1 = (180*acos(y2(1)))/pi;
+ang2 = (180*acos(y2(53)))/pi;
+plot(y1)
